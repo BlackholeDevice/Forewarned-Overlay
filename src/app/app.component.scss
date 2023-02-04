@@ -1,0 +1,17 @@
+.mat-button-toggle-checked {
+  border: 2px solid red;
+  background-color: inherit;
+}
+
+.mat-button-toggle {
+  width: 140px;
+  height: 140px;
+  white-space: break-spaces;
+  border-radius: 10px !important;
+  display: inline-flex;
+  align-content: flex-end;
+}
+
+.flex {
+  display: flex;
+}

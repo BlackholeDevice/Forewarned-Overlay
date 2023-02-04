@@ -1,6 +1,6 @@
 import {Injectable} from '@angular/core';
 import {Evidence} from "./evidence"
-import {entries, filter, flow, map, sortBy, sum} from 'lodash/fp';
+import {entries, filter, flow, map, reduce, sortBy, sum, values} from 'lodash/fp';
 import {Observable, of} from "rxjs";
 
 
@@ -23,14 +23,26 @@ export class EvidenceService {
     'Ataimon the Abominable': calcEvidence(Evidence.footsteps, Evidence.tremors, Evidence.destruction, Evidence.disturbedTombs, Evidence.electronicDisturbance, Evidence.metallicSignature, Evidence.vocalResponse, Evidence.radarDetection)
   };
 
-  public findPossibleMejai(evidence: Evidence[]): Observable<string[]> {
+  private calcMejai(evidence: Evidence[]): string[] {
     const flag = calcEvidence(...evidence);
     return flow(
       entries,
       filter(([_, v]) => (v & flag) === flag || flag === 0),
       map(([k]) => k),
-      sortBy(String),
-      of
+      sortBy(String)
     )(this.mejaiList)
+  }
+
+  public findPossibleMejai(evidence: Evidence[]): Observable<string[]> {
+    return of(this.calcMejai(evidence));
+  }
+
+  public summarizeEvidence(evidence: Evidence[]): Observable<{[key: number]: number}> {
+    return flow(
+      values,
+      filter(v => typeof v === 'number'),
+      reduce((obj, v) => ({...obj, [v]: this.calcMejai([...evidence, v]).length}), {}),
+      of
+    )(Evidence);
   }
 }

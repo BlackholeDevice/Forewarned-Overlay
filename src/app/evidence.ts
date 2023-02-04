@@ -1,16 +1,16 @@
 export enum Evidence {
-  footsteps = 1,
-  tremors = 2,
-  destruction = 4,
-  disturbedTombs = 8,
-  electronicDisturbance = 16,
-  extinguishedFlames = 32,
-  magneticDistortion = 64,
-  metallicSignature = 128,
-  vocalResponse = 256,
-  radarDetection = 512,
-  radioactivity = 1024,
-  reanimation = 2048,
+  destruction = 1,
+  disturbedTombs = 2,
+  electronicDisturbance = 4,
+  extinguishedFlames = 8,
+  footsteps = 16,
+  magneticDistortion = 32,
+  metallicSignature = 64,
+  radarDetection = 128,
+  radioactivity = 256,
+  reanimation = 512,
+  tremors = 1024,
+  vocalResponse = 2048  ,
 }
 
 export const EvidenceLang: { [key: string]: string } = {

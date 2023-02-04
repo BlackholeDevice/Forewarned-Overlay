@@ -2,12 +2,12 @@ import {Component, OnInit} from '@angular/core';
 import {Observable} from "rxjs";
 import {Evidence, EvidenceLang} from './evidence';
 import {EvidenceService} from "./evidence.service";
-import {filter, findIndex, flow, reduce, values} from "lodash/fp";
+import {get, filter, findIndex, flow, reduce, values} from "lodash/fp";
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
-  styleUrls: ['./app.component.css']
+  styleUrls: ['./app.component.scss']
 })
 export class AppComponent implements OnInit {
   title = 'ForewarnedOverlay';
@@ -17,8 +17,11 @@ export class AppComponent implements OnInit {
     filter(v => typeof v === 'number'),
     reduce((obj: any, v: number) => ({...obj, [v]: EvidenceLang[v]}), {})
   )(Evidence);
-  // @ts-ignore
-  public mejaiList$: Observable<string[]>;
+
+  public readonly get = get;
+
+  public mejaiList$?: Observable<string[]>;
+  public summary$?: Observable<{ [key: number]: number }>;
   private evidence: Evidence[] = [];
 
   constructor(private service: EvidenceService) {
@@ -27,13 +30,12 @@ export class AppComponent implements OnInit {
 
   public ngOnInit(): void {
     console.log(this.evidenceButtons);
-    this.refresh()
+    this.refresh();
   }
 
   public toggleEvidence(key: string) {
-    // @ts-ignore
     let flag = parseInt(key, 10);
-    const index = findIndex(e => e === flag, this.evidence);
+    const index = this.indexOf(key);
     if (index !== -1) {
       this.evidence.splice(index, 1);
     } else {
@@ -44,5 +46,11 @@ export class AppComponent implements OnInit {
 
   private refresh(): void {
     this.mejaiList$ = this.service.findPossibleMejai(this.evidence);
+    this.summary$ = this.service.summarizeEvidence(this.evidence);
+  }
+
+  private indexOf(key: string): number {
+    let flag = parseInt(key, 10);
+    return findIndex(e => e === flag, this.evidence);
   }
 }
