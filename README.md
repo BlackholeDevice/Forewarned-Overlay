@@ -1,4 +1,6 @@
-# ForewarnedOverlay
+[![Github Pages](https://github.com/BlackholeDevice/Forewarned-Overlay/actions/workflows/jekyll-gh-pages.yml/badge.svg)](https://blackholedevice.github.io/Forewarned-Overlay/) 
+
+# ForewarnedOverlay 
 
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 15.1.4.
 
