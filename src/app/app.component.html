@@ -1,17 +1,18 @@
-<div class="flex">
-  <mat-grid-list cols="6" rowHeight="180px" style="width: 75%;" *ngIf="summary$ | async; let summary">
-    <mat-grid-tile *ngFor="let button of evidenceButtons | keyvalue">
-      <mat-button-toggle
-        (change)="toggleEvidence(button.key)"
-        [value]="button.key"
-        [matBadge]="get(button.key, summary) || null"
-        [matBadgeColor]="get(button.key, summary) === 1 && 'warn' || 'primary'"
-        [disabled]="get(button.key, summary) === 0"
-      >
-        {{button.value}}
-      </mat-button-toggle>
-    </mat-grid-tile>
-  </mat-grid-list>
+<div class="pt-3">
+  <div *ngIf="summary$ | async; let summary" class="container d-flex flex-wrap">
+    <mat-button-toggle
+      (change)="toggleEvidence(button.key)"
+      *ngFor="let button of evidenceButtons | keyvalue"
+      [disabled]="get(button.key, summary) === 0"
+      [matBadgeColor]="get(button.key, summary) === 1 && 'warn' || 'primary'"
+      [matBadgeHidden]="!get(button.key, summary)"
+      [matBadge]="get(button.key, summary)"
+      [value]="button.key"
+      class="col-lg-2 col-md-3 col-6"
+    >
+      {{button.value}}
+    </mat-button-toggle>
+  </div>
 
   <mat-list>
     <mat-list-item *ngFor="let mejai of mejaiList$ | async">{{mejai}}</mat-list-item>

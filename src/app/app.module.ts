@@ -8,6 +8,7 @@ import {MatButtonToggleModule} from "@angular/material/button-toggle";
 import {MatGridListModule} from "@angular/material/grid-list";
 import {MatListModule} from "@angular/material/list";
 import {MatBadgeModule} from "@angular/material/badge";
+import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
 
 @NgModule({
   declarations: [
@@ -25,7 +26,8 @@ import {MatBadgeModule} from "@angular/material/badge";
     MatButtonToggleModule,
     MatGridListModule,
     MatListModule,
-    MatBadgeModule
+    MatBadgeModule,
+    NgbModule
   ],
   providers: [],
   bootstrap: [AppComponent]
