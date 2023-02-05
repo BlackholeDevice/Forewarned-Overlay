@@ -2,7 +2,7 @@ import {Component, OnInit} from '@angular/core';
 import {Observable} from "rxjs";
 import {Evidence, EvidenceLang} from './evidence';
 import {EvidenceService} from "./evidence.service";
-import {get, filter, findIndex, flow, reduce, values} from "lodash/fp";
+import {filter, findIndex, flow, get, reduce, values} from "lodash/fp";
 
 @Component({
   selector: 'app-root',
@@ -22,7 +22,7 @@ export class AppComponent implements OnInit {
 
   public mejaiList$?: Observable<string[]>;
   public summary$?: Observable<{ [key: number]: number }>;
-  private evidence: Evidence[] = [];
+  public evidence: Evidence[] = [];
 
   constructor(private service: EvidenceService) {
   }
@@ -44,7 +44,7 @@ export class AppComponent implements OnInit {
     this.refresh();
   }
 
-  private refresh(): void {
+  public refresh(): void {
     this.mejaiList$ = this.service.findPossibleMejai(this.evidence);
     this.summary$ = this.service.summarizeEvidence(this.evidence);
   }
@@ -52,5 +52,9 @@ export class AppComponent implements OnInit {
   private indexOf(key: string): number {
     let flag = parseInt(key, 10);
     return findIndex(e => e === flag, this.evidence);
+  }
+
+  public has(key: string): boolean {
+    return this.indexOf(key) !== -1;
   }
 }

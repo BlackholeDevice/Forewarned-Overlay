@@ -4,14 +4,18 @@
       (change)="toggleEvidence(button.key)"
       *ngFor="let button of evidenceButtons | keyvalue"
       [disabled]="get(button.key, summary) === 0"
-      [matBadgeColor]="get(button.key, summary) === 1 && 'warn' || 'primary'"
-      [matBadgeHidden]="!get(button.key, summary)"
-      [matBadge]="get(button.key, summary)"
+      [checked]="has(button.key)"
       [value]="button.key"
       class="col-lg-2 col-md-3 col-6"
     >
-      {{button.value}}
+      <span
+        [matBadgeColor]="get(button.key, summary) === 1 && 'warn' || 'primary'"
+        [matBadgeHidden]="!get(button.key, summary)"
+        [matBadge]="get(button.key, summary)"
+        matBadgeOverlap="false"
+      >{{button.value}}</span>
     </mat-button-toggle>
+    <button (click)="evidence = [];refresh()" class="col-12" mat-flat-button>Reset</button>
   </div>
 
   <mat-list>

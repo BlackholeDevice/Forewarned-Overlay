@@ -1,11 +1,11 @@
 import {Injectable} from '@angular/core';
 import {Evidence} from "./evidence"
-import {entries, filter, flow, map, reduce, sortBy, sum, values} from 'lodash/fp';
+import {entries, filter, flow, map, reduce, sortBy, values} from 'lodash/fp';
 import {Observable, of} from "rxjs";
 
 
 function calcEvidence(...evidence: Evidence[]): number {
-  return sum(evidence);
+  return reduce((cumulative, flag) => cumulative | flag, 0, evidence);
 }
 
 
