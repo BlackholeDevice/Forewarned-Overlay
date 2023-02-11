@@ -1,11 +1,15 @@
 import {Injectable} from '@angular/core';
-import {Evidence} from "./evidence"
-import {entries, filter, flow, map, reduce, sortBy, values} from 'lodash/fp';
-import {Observable, of} from "rxjs";
+import {Evidences, EvidenceType} from "./evidence"
+import {entries, filter, flow, keys, map as _map, reduce, sortBy} from 'lodash/fp';
+import {Observable, of, map} from "rxjs";
+import {Mejai, Mejais, MejaiType} from "./mejai";
 
 
-function calcEvidence(...evidence: Evidence[]): number {
-  return reduce((cumulative, flag) => cumulative | flag, 0, evidence);
+export function calcEvidence(...evidenceTypes: EvidenceType[]): number {
+  return flow(
+    _map((evidenceType: EvidenceType) => Evidences[evidenceType]),
+    reduce((cumulative, {mask}) => cumulative | mask, 0)
+  )(evidenceTypes);
 }
 
 
@@ -14,35 +18,35 @@ function calcEvidence(...evidence: Evidence[]): number {
 })
 export class EvidenceService {
 
-  private readonly mejaiList: { [key: string]: number } = {
-    'Necreph the Shadow': calcEvidence(Evidence.destruction, Evidence.disturbedTombs, Evidence.electronicDisturbance, Evidence.extinguishedFlames, Evidence.magneticDistortion, Evidence.metallicSignature, Evidence.vocalResponse, Evidence.radioactivity),
-    'Rathos the Damned': calcEvidence(Evidence.footsteps, Evidence.disturbedTombs, Evidence.electronicDisturbance, Evidence.extinguishedFlames, Evidence.magneticDistortion, Evidence.metallicSignature, Evidence.radarDetection, Evidence.reanimation),
-    'Dekan the Lost': calcEvidence(Evidence.footsteps, Evidence.tremors, Evidence.destruction, Evidence.disturbedTombs, Evidence.vocalResponse, Evidence.radarDetection, Evidence.radioactivity, Evidence.reanimation),
-    'Ouphris the Forgotten': calcEvidence(Evidence.footsteps, Evidence.tremors, Evidence.extinguishedFlames, Evidence.magneticDistortion, Evidence.metallicSignature, Evidence.vocalResponse, Evidence.radioactivity, Evidence.reanimation),
-    'Talgor the Perilous': calcEvidence(Evidence.tremors, Evidence.destruction, Evidence.electronicDisturbance, Evidence.extinguishedFlames, Evidence.magneticDistortion, Evidence.radarDetection, Evidence.radioactivity, Evidence.reanimation),
-    'Ataimon the Abominable': calcEvidence(Evidence.footsteps, Evidence.tremors, Evidence.destruction, Evidence.disturbedTombs, Evidence.electronicDisturbance, Evidence.metallicSignature, Evidence.vocalResponse, Evidence.radarDetection)
-  };
+  private readonly mejaiList: Record<MejaiType, number> = flow(
+    entries,
+    reduce((obj, [mejaiType, {evidence}]: [MejaiType, Mejai]) => ({
+      ...obj,
+      [mejaiType]: calcEvidence(...evidence)
+    }), {})
+  )(Mejais);
 
-  private calcMejai(evidence: Evidence[]): string[] {
+  private calcMejai(evidence: EvidenceType[]): MejaiType[] {
     const flag = calcEvidence(...evidence);
     return flow(
       entries,
       filter(([_, v]) => (v & flag) === flag || flag === 0),
-      map(([k]) => k),
+      _map(([k]) => k),
       sortBy(String)
     )(this.mejaiList)
   }
 
-  public findPossibleMejai(evidence: Evidence[]): Observable<string[]> {
-    return of(this.calcMejai(evidence));
+  public findPossibleMejai(evidence: EvidenceType[]): Observable<Mejai[]> {
+    return of(this.calcMejai(evidence)).pipe(map(_map(type => Mejais[type])));
   }
 
-  public summarizeEvidence(evidence: Evidence[]): Observable<{[key: number]: number}> {
+  public summarizeEvidence(evidence: EvidenceType[]): Observable<Record<EvidenceType, number>> {
     return flow(
-      values,
-      filter(v => typeof v === 'number'),
-      reduce((obj, v) => ({...obj, [v]: this.calcMejai([...evidence, v]).length}), {}),
+      keys,
+      reduce((obj, key: EvidenceType) => ({
+        ...obj,
+        [key]: this.calcMejai([...evidence, key]).length}), {}),
       of
-    )(Evidence);
+    )(Evidences);
   }
 }

@@ -10,27 +10,31 @@ import {MatListModule} from "@angular/material/list";
 import {MatBadgeModule} from "@angular/material/badge";
 import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
 import {MatButtonModule} from "@angular/material/button";
+import {MatCardModule} from "@angular/material/card";
+import {MatIconModule} from "@angular/material/icon";
 
 @NgModule({
   declarations: [
     AppComponent,
   ],
-  imports: [
-    BrowserModule,
-    ServiceWorkerModule.register('ngsw-worker.js', {
-      enabled: !isDevMode(),
-      // Register the ServiceWorker as soon as the application is stable
-      // or after 30 seconds (whichever comes first).
-      registrationStrategy: 'registerWhenStable:30000'
-    }),
-    BrowserAnimationsModule,
-    MatButtonToggleModule,
-    MatGridListModule,
-    MatListModule,
-    MatBadgeModule,
-    NgbModule,
-    MatButtonModule
-  ],
+    imports: [
+        BrowserModule,
+        ServiceWorkerModule.register('ngsw-worker.js', {
+            enabled: !isDevMode(),
+            // Register the ServiceWorker as soon as the application is stable
+            // or after 30 seconds (whichever comes first).
+            registrationStrategy: 'registerWhenStable:30000'
+        }),
+        BrowserAnimationsModule,
+        MatButtonToggleModule,
+        MatGridListModule,
+        MatListModule,
+        MatBadgeModule,
+        NgbModule,
+        MatButtonModule,
+        MatCardModule,
+        MatIconModule
+    ],
   providers: [],
   bootstrap: [AppComponent]
 })

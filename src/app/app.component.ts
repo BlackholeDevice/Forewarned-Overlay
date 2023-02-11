@@ -1,8 +1,9 @@
 import {Component, OnInit} from '@angular/core';
-import {Observable} from "rxjs";
-import {Evidence, EvidenceLang} from './evidence';
+import {finalize, Observable, tap} from "rxjs";
+import {Evidence, Evidences, EvidenceType} from './evidence';
 import {EvidenceService} from "./evidence.service";
-import {filter, findIndex, flow, get, reduce, values} from "lodash/fp";
+import {entries, filter as _filter, flow, get, indexOf, map, reduce, sortBy} from "lodash/fp";
+import {Mejai} from "./mejai";
 
 @Component({
   selector: 'app-root',
@@ -11,18 +12,19 @@ import {filter, findIndex, flow, get, reduce, values} from "lodash/fp";
 })
 export class AppComponent implements OnInit {
   title = 'ForewarnedOverlay';
+  private adding: boolean = false;
 
-  public readonly evidenceButtons: { [key: number]: string } = flow(
-    values,
-    filter(v => typeof v === 'number'),
-    reduce((obj: any, v: number) => ({...obj, [v]: EvidenceLang[v]}), {})
-  )(Evidence);
+  public readonly evidenceButtons: Record<EvidenceType, Evidence> = flow(
+    entries,
+    sortBy(0),
+    reduce((obj, [k, v]: [EvidenceType, Evidence]) => ({...obj, [k]: v as Evidence}), {})
+  )(Evidences);
 
   public readonly get = get;
 
-  public mejaiList$?: Observable<string[]>;
+  public mejaiList$?: Observable<Mejai[]>;
   public summary$?: Observable<{ [key: number]: number }>;
-  public evidence: Evidence[] = [];
+  public evidence: EvidenceType[] = [];
 
   constructor(private service: EvidenceService) {
   }
@@ -34,27 +36,46 @@ export class AppComponent implements OnInit {
   }
 
   public toggleEvidence(key: string) {
-    let flag = parseInt(key, 10);
-    const index = this.indexOf(key);
+    let evidenceType = key as EvidenceType;
+    const index = this.indexOf(evidenceType);
     if (index !== -1) {
       this.evidence.splice(index, 1);
     } else {
-      this.evidence.push(flag);
+      this.adding = true;
+      this.evidence.push(evidenceType);
     }
+    this.refresh();
+  }
+
+  public reset(): void {
+    this.evidence = [];
     this.refresh();
   }
 
   public refresh(): void {
     this.mejaiList$ = this.service.findPossibleMejai(this.evidence);
-    this.summary$ = this.service.summarizeEvidence(this.evidence);
+    this.summary$ = this.service.summarizeEvidence(this.evidence).pipe(
+      tap(summary => {
+        const [first] = this.evidence;
+        if (first && this.adding) {
+          const count = summary[first];
+          this.evidence = flow(
+            entries,
+            _filter(([_, matching]: [EvidenceType, number]) => matching === count),
+            map(([mejai]) => mejai)
+          )(summary)
+        }
+      }),
+      finalize(() => this.adding = false)
+    );
   }
 
-  private indexOf(key: string): number {
-    let flag = parseInt(key, 10);
-    return findIndex(e => e === flag, this.evidence);
+  private indexOf(key: EvidenceType): number {
+    return indexOf(key, this.evidence);
   }
 
   public has(key: string): boolean {
-    return this.indexOf(key) !== -1;
+    let evidenceType = key as EvidenceType;
+    return this.indexOf(evidenceType) !== -1;
   }
 }

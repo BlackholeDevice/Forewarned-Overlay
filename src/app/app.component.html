@@ -1,24 +1,54 @@
 <div class="pt-3">
-  <div *ngIf="summary$ | async; let summary" class="container d-flex flex-wrap">
-    <mat-button-toggle
-      (change)="toggleEvidence(button.key)"
+  <div *ngIf="summary$ | async; let summary" class="container d-flex flex-wrap justify-content-center">
+    <div
       *ngFor="let button of evidenceButtons | keyvalue"
-      [disabled]="get(button.key, summary) === 0"
-      [checked]="has(button.key)"
-      [value]="button.key"
-      class="col-lg-2 col-md-3 col-6"
+      class="col-lg-2 col-md-3 col-6 d-flex justify-content-center"
     >
-      <span
+      <mat-button-toggle
+        (change)="toggleEvidence(button.key)"
+        [disabled]="get(button.key , summary) === 0"
+        [checked]="has(button.key)"
+        [value]="button.key"
         [matBadgeColor]="get(button.key, summary) === 1 && 'warn' || 'primary'"
         [matBadgeHidden]="!get(button.key, summary)"
         [matBadge]="get(button.key, summary)"
-        matBadgeOverlap="false"
-      >{{button.value}}</span>
-    </mat-button-toggle>
-    <button (click)="evidence = [];refresh()" class="col-12" mat-flat-button>Reset</button>
+      >
+        <div class="evidence-icon mt-3">
+          <img src="./assets/evidence/{{button.key}}.webp" alt="{{button.value.name}} icon" height="100"/>
+        </div>
+        {{button.value.name}}
+      </mat-button-toggle>
+    </div>
+    <button (click)="reset()" class="col-12" mat-flat-button>Reset</button>
   </div>
 
-  <mat-list>
-    <mat-list-item *ngFor="let mejai of mejaiList$ | async">{{mejai}}</mat-list-item>
-  </mat-list>
+  <div class="pt-5 container d-flex flex-wrap">
+    <div *ngFor="let mejai of mejaiList$ | async" class="col-lg-3 col-md-4 col-6 mb-3">
+      <mat-card>
+        <mat-card-header>
+          <mat-card-title>{{mejai.name}}</mat-card-title>
+          <mat-card-subtitle>{{mejai.subtitle}}</mat-card-subtitle>
+        </mat-card-header>
+        <div class="mat-card-icon">
+          <img mat-card-image
+               src="./assets/mejai/{{mejai.name | lowercase}}.webp"
+               alt="Image of {{mejai.name}} {{mejai.subtitle}}"/>
+        </div>
+        <mat-card-content>
+          <mat-list *ngIf="mejai.strengths">
+            <mat-list-item *ngFor="let strength of mejai.strengths" lines="2">
+              <mat-icon matListItemIcon fontIcon="report" color="warn"></mat-icon>
+              <span matListItemTitle>{{strength}}</span>
+            </mat-list-item>
+          </mat-list>
+          <mat-list *ngIf="mejai.weaknesses">
+            <mat-list-item *ngFor="let weakness of mejai.weaknesses" lines="2">
+              <mat-icon matListItemIcon fontIcon="health_and_safety" color="accent"></mat-icon>
+              <span matListItemTitle>{{weakness}}</span>
+            </mat-list-item>
+          </mat-list>
+        </mat-card-content>
+      </mat-card>
+    </div>
+  </div>
 </div>

@@ -1,13 +1,28 @@
 .mat-button-toggle-checked {
-  border: 2px solid red;
+  outline: 2px solid red;
   background-color: inherit;
 }
 
 .mat-button-toggle {
   white-space: break-spaces;
   border-radius: 10px !important;
+  margin-bottom: 10px;
+  width: 175px;
+  .evidence-icon {
+    width: 100%;
+    height: 100px;
+  }
 }
 
-.container {
-  justify-content: center;
+mat-card {
+  width: 300px;
+
+  .mat-card-icon {
+    height: 200px;
+    overflow: hidden;
+
+    img {
+      width: 100%;
+    }
+  }
 }
