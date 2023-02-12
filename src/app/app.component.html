@@ -2,7 +2,7 @@
   <div *ngIf="summary$ | async; let summary" class="container d-flex flex-wrap justify-content-center">
     <div
       *ngFor="let button of evidenceButtons | keyvalue"
-      class="col-lg-2 col-md-3 col-6 d-flex justify-content-center"
+      class="col-lg-2 col-md-3 col-4 d-flex justify-content-center"
     >
       <mat-button-toggle
         (change)="toggleEvidence(button.key)"
