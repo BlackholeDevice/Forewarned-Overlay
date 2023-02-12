@@ -1,4 +1,4 @@
-import {isDevMode, NgModule} from '@angular/core';
+import {isDevMode, NgModule, Provider} from '@angular/core';
 import {BrowserModule} from '@angular/platform-browser';
 
 import {AppComponent} from './app.component';
@@ -12,30 +12,37 @@ import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
 import {MatButtonModule} from "@angular/material/button";
 import {MatCardModule} from "@angular/material/card";
 import {MatIconModule} from "@angular/material/icon";
+import {WakelockService} from "./wakelock.service";
+
+const providers: Provider[] = [];
+
+if (WakelockService.provide()) {
+  providers.push(WakelockService)
+}
 
 @NgModule({
   declarations: [
     AppComponent,
   ],
-    imports: [
-        BrowserModule,
-        ServiceWorkerModule.register('ngsw-worker.js', {
-            enabled: !isDevMode(),
-            // Register the ServiceWorker as soon as the application is stable
+  imports: [
+    BrowserModule,
+    ServiceWorkerModule.register('ngsw-worker.js', {
+      enabled: !isDevMode(),
+      // Register the ServiceWorker as soon as the application is stable
             // or after 30 seconds (whichever comes first).
             registrationStrategy: 'registerWhenStable:30000'
         }),
-        BrowserAnimationsModule,
-        MatButtonToggleModule,
-        MatGridListModule,
-        MatListModule,
-        MatBadgeModule,
-        NgbModule,
-        MatButtonModule,
-        MatCardModule,
-        MatIconModule
-    ],
-  providers: [],
+    BrowserAnimationsModule,
+    MatButtonToggleModule,
+    MatGridListModule,
+    MatListModule,
+    MatBadgeModule,
+    NgbModule,
+    MatButtonModule,
+    MatCardModule,
+    MatIconModule
+  ],
+  providers,
   bootstrap: [AppComponent]
 })
 export class AppModule { }

@@ -1,16 +1,17 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnDestroy, OnInit, Optional} from '@angular/core';
 import {finalize, Observable, tap} from "rxjs";
 import {Evidence, Evidences, EvidenceType} from './evidence';
 import {EvidenceService} from "./evidence.service";
 import {entries, filter as _filter, flow, get, indexOf, map, reduce, sortBy} from "lodash/fp";
 import {Mejai} from "./mejai";
+import {WakelockService} from "./wakelock.service";
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss']
 })
-export class AppComponent implements OnInit {
+export class AppComponent implements OnInit, OnDestroy {
   title = 'ForewarnedOverlay';
   private adding: boolean = false;
 
@@ -26,13 +27,18 @@ export class AppComponent implements OnInit {
   public summary$?: Observable<{ [key: number]: number }>;
   public evidence: EvidenceType[] = [];
 
-  constructor(private service: EvidenceService) {
+  constructor(private service: EvidenceService, @Optional() private wakeLock: WakelockService) {
   }
 
 
   public ngOnInit(): void {
     console.log(this.evidenceButtons);
     this.refresh();
+    this.wakeLock?.acquire().subscribe();
+  }
+
+  public ngOnDestroy() {
+    this.wakeLock?.release().subscribe();
   }
 
   public toggleEvidence(key: string) {
