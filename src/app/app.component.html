@@ -14,7 +14,7 @@
         [matBadge]="get(button.key, summary)"
       >
         <div class="evidence-icon mt-3">
-          <img src="./assets/evidence/{{button.key}}.webp" alt="{{button.value.name}} icon" height="100"/>
+          <img alt="{{button.value.name}} icon" height="50" src="./assets/evidence/{{button.key}}.webp"/>
         </div>
         {{button.value.name}}
       </mat-button-toggle>
@@ -22,8 +22,8 @@
     <button (click)="reset()" class="col-12" mat-flat-button>Reset</button>
   </div>
 
-  <div class="pt-5 container d-flex flex-wrap">
-    <div *ngFor="let mejai of mejaiList$ | async" class="col-lg-3 col-md-4 col-6 mb-3">
+  <div class="pt-5 container d-flex flex-wrap justify-content-center">
+    <div *ngFor="let mejai of mejaiList$ | async" class="col-lg-3 col-md-6 col-12 mb-3 d-flex justify-content-center">
       <mat-card>
         <mat-card-header>
           <mat-card-title>{{mejai.name}}</mat-card-title>
