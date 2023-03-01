@@ -13,3 +13,8 @@ body {
   margin: 0;
   font-family: Roboto, "Helvetica Neue", sans-serif;
 }
+
+.mdc-list-item__primary-text {
+  white-space: break-spaces !important;
+  text-overflow: unset !important;
+}

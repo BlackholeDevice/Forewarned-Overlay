@@ -38,7 +38,7 @@ jobs:
       - name: Install dependencies
         run: npm install
       - name: Build
-        run: npx ng build --configuration production
+        run: npx ng build --configuration production --base-href /Forewarned-Overlay/
       - name: Build with Jekyll
         uses: actions/jekyll-build-pages@v1
         with:
