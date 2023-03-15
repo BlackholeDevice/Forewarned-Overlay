@@ -12,6 +12,7 @@
         [matBadgeColor]="get(button.key, summary) === 1 && 'warn' || 'primary'"
         [matBadgeHidden]="!get(button.key, summary)"
         [matBadge]="get(button.key, summary)"
+        [class.automatic]="has(button.key, automatic)"
       >
         <div class="evidence-icon mt-3">
           <img alt="{{button.value.name}} icon" height="50" src="./assets/evidence/{{button.key}}.webp"/>

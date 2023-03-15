@@ -2,7 +2,7 @@ import {Component, OnDestroy, OnInit, Optional} from '@angular/core';
 import {finalize, Observable, tap} from "rxjs";
 import {Evidence, Evidences, EvidenceType} from './evidence';
 import {EvidenceService} from "./evidence.service";
-import {entries, filter as _filter, flow, get, indexOf, map, reduce, sortBy} from "lodash/fp";
+import {difference, entries, filter as _filter, flow, get, indexOf, map, reduce, sortBy} from "lodash/fp";
 import {Mejai} from "./mejai";
 import {WakelockService} from "./wakelock.service";
 
@@ -26,6 +26,7 @@ export class AppComponent implements OnInit, OnDestroy {
   public mejaiList$?: Observable<Mejai[]>;
   public summary$?: Observable<{ [key: number]: number }>;
   public evidence: EvidenceType[] = [];
+  public automatic: EvidenceType[] = [];
 
   constructor(private service: EvidenceService, @Optional() private wakeLock: WakelockService) {
   }
@@ -55,6 +56,7 @@ export class AppComponent implements OnInit, OnDestroy {
 
   public reset(): void {
     this.evidence = [];
+    this.automatic = [];
     this.refresh();
   }
 
@@ -65,23 +67,24 @@ export class AppComponent implements OnInit, OnDestroy {
         const [first] = this.evidence;
         if (first && this.adding) {
           const count = summary[first];
-          this.evidence = flow(
+          const evidence = flow(
             entries,
             _filter(([_, matching]: [EvidenceType, number]) => matching === count),
             map(([mejai]) => mejai)
-          )(summary)
+          )(summary);
+          this.automatic = difference(evidence, this.evidence);
         }
       }),
       finalize(() => this.adding = false)
     );
   }
 
-  private indexOf(key: EvidenceType): number {
-    return indexOf(key, this.evidence);
+  public has(key: string, evidence?: EvidenceType[]): boolean {
+    let evidenceType = key as EvidenceType;
+    return this.indexOf(evidenceType, evidence) !== -1;
   }
 
-  public has(key: string): boolean {
-    let evidenceType = key as EvidenceType;
-    return this.indexOf(evidenceType) !== -1;
+  private indexOf(key: EvidenceType, evidence?: EvidenceType[]): number {
+    return indexOf(key, evidence || this.evidence);
   }
 }
