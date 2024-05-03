@@ -6,7 +6,8 @@ export interface Mejai {
   evidence: EvidenceType[];
   strengths?: string[];
   weaknesses?: string[];
-  wiki?: string
+  wiki?: string;
+  icon?: string;
 }
 
 export type MejaiType =
@@ -15,7 +16,8 @@ export type MejaiType =
   'necreph' |
   'ouphris' |
   'rathos' |
-  'talgor';
+  'talgor' |
+  'ptahmes';
 
 export const Mejais: Readonly<Record<MejaiType, Mejai>> = {
   ataimon: {
@@ -130,6 +132,30 @@ export const Mejais: Readonly<Record<MejaiType, Mejai>> = {
     weaknesses: [
       'Visible on tablet',
       'Stunned by Handheld radio'
+    ]
+  },
+  ptahmes: {
+    name: 'Ptahmes',
+    subtitle: 'The Resilient',
+    evidence: [
+      'destruction',
+      'extinguishedFlames',
+      'reanimation',
+      'vocalResponse',
+      'radarDetection',
+      'tremors',
+      'footsteps',
+      'electronicDisturbance'
+    ],
+    strengths: [
+      'Don\'t stare too long',
+      'Teleports',
+      'Disorients'
+    ],
+    weaknesses: [
+      'Halts when seen',
+      'Repelled with camera',
+      'Sounds of bones breaking',
     ]
   }
 }
